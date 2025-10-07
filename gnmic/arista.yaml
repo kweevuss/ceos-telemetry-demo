@@ -1,0 +1,39 @@
+username: admin
+password: admin
+port: 6030
+insecure: true
+
+targets:
+  172.20.20.6:
+    timeout: 2s
+    subscriptions:
+      - sub1
+    outputs:
+      - prom-output
+  172.20.20.8:
+    timeout: 2s
+    subscriptions:
+      - sub1
+    outputs:
+      - prom-output
+
+subscriptions:
+  sub1:
+    paths:
+       - interfaces/interface[name=*]/state/
+    stream-mode: sample
+    sample-interval: 10s
+
+outputs:
+  prom-output:
+    type: prometheus # required
+    # address to listen on for incoming scrape requests
+    listen: :9804 
+    # path to query to get the metrics
+    path: /metrics 
+    # maximum lifetime of metrics in the local cache, #
+    # a zero value defaults to 60s, a negative duration (e.g: -1s) disables the expiration
+    expiration: 60s 
+    # a string to be used as the metric namespace
+    metric-prefix: "arista-containerlab" 
+    
