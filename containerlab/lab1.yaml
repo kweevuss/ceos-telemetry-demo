@@ -1,0 +1,44 @@
+name: sample
+prefix: "kptceos" 
+topology:
+  kinds:
+    ceos:
+      image: ceos-4.34.2.1f
+  nodes:
+    ceos-leaf1:
+      kind: ceos 
+    ceos-leaf2:
+      kind: ceos
+    ceos-spine1:
+      kind: ceos
+    ceos-spine2:
+      kind: ceos
+    ceos-pe01:
+      kind: ceos
+    ceos-pe02:
+      kind: ceos
+    linux-leaf-1:
+      kind: linux
+      image: ghcr.io/hellt/network-multitool
+      binds:
+       - configs/linux-leaf-1/host-linux-leaf-1.sh:/host-linux-leaf-1.sh
+      exec:
+        - bash /host-linux-leaf-1.sh
+    linux-leaf-2:
+      kind: linux
+      image: ghcr.io/hellt/network-multitool
+      binds:
+       - configs/linux-leaf-2/host-linux-leaf-2.sh:/host-linux-leaf-2.sh
+      exec:
+        - bash /host-linux-leaf-2.sh
+  links:
+    - endpoints: ["ceos-leaf1:eth1", "ceos-spine1:eth1"]
+    - endpoints: ["ceos-leaf1:eth2", "ceos-spine2:eth1"]
+    - endpoints: ["ceos-leaf2:eth1", "ceos-spine1:eth2"]
+    - endpoints: ["ceos-leaf2:eth2", "ceos-spine2:eth2"]
+    - endpoints: ["ceos-pe01:eth1", "ceos-spine1:eth3"]
+    - endpoints: ["ceos-pe01:eth2", "ceos-spine2:eth3"]
+    - endpoints: ["ceos-pe02:eth1", "ceos-spine1:eth4"]
+    - endpoints: ["ceos-pe02:eth2", "ceos-spine2:eth4"]
+    - endpoints: ["linux-leaf-1:eth1", "ceos-leaf1:eth10"]
+    - endpoints: ["linux-leaf-2:eth1", "ceos-leaf2:eth10"]
